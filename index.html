@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Phone House BD Pro</title>
+
+<style>
+
+body{
+font-family:Arial;
+margin:0;
+background:#f4f6f9;
+}
+
+header{
+background:#0f172a;
+color:white;
+padding:20px;
+text-align:center;
+}
+
+header h1{
+margin:0;
+}
+
+.filters{
+margin-top:15px;
+}
+
+input,select{
+padding:8px;
+margin:5px;
+border-radius:6px;
+border:1px solid #ccc;
+}
+
+.container{
+display:grid;
+grid-template-columns:repeat(auto-fill,minmax(250px,1fr));
+gap:20px;
+padding:20px;
+}
+
+.phone{
+background:white;
+padding:15px;
+border-radius:12px;
+box-shadow:0 4px 10px rgba(0,0,0,0.1);
+text-align:center;
+cursor:pointer;
+transition:0.3s;
+}
+
+.phone:hover{
+transform:translateY(-5px);
+}
+
+.phone img{
+width:100%;
+height:200px;
+object-fit:contain;
+}
+
+.price{
+color:#16a34a;
+font-weight:bold;
+}
+
+.rating{
+color:orange;
+}
+
+.popup{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.7);
+display:flex;
+align-items:center;
+justify-content:center;
+}
+
+.hidden{
+display:none;
+}
+
+.popup-content{
+background:white;
+padding:30px;
+border-radius:10px;
+max-width:400px;
+text-align:center;
+}
+
+.popup-content img{
+width:200px;
+}
+
+#close{
+cursor:pointer;
+float:right;
+font-size:20px;
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+
+<h1>📱 Phone House BD PRO</h1>
+<p>Smartphone Database (2025-2026)</p>
+
+<div class="filters">
+
+<input type="text" id="search" placeholder="Search phones">
+
+<select id="brandFilter">
+<option value="all">All Brands</option>
+<option>Samsung</option>
+<option>Apple</option>
+<option>Xiaomi</option>
+<option>OnePlus</option>
+<option>Oppo</option>
+<option>Vivo</option>
+<option>Google</option>
+</select>
+
+</div>
+
+</header>
+
+<div class="container" id="phoneContainer"></div>
+
+<div id="popup" class="popup hidden">
+<div class="popup-content">
+
+<span id="close">✖</span>
+
+<img id="pImg">
+<h2 id="pName"></h2>
+
+<p id="pBrand"></p>
+<p id="pPrice"></p>
+<p id="pSpec"></p>
+
+</div>
+</div>
+
+<script>
+
+const phones=[
+
+{
+name:"Samsung Galaxy S25",
+brand:"Samsung",
+price:"৳120000",
+ram:"12GB",
+camera:"200MP",
+battery:"5000mAh",
+rating:"★★★★☆",
+img:"https://fdn2.gsmarena.com/vv/pics/samsung/samsung-galaxy-s24-ultra-1.jpg"
+},
+
+{
+name:"Samsung Galaxy A26 5G",
+brand:"Samsung",
+price:"৳35000",
+ram:"8GB",
+camera:"50MP",
+battery:"5000mAh",
+rating:"★★★★☆",
+img:"https://fdn2.gsmarena.com/vv/pics/samsung/samsung-galaxy-a25-5g.jpg"
+},
+
+{
+name:"iPhone 16 Pro",
+brand:"Apple",
+price:"৳150000",
+ram:"8GB",
+camera:"48MP",
+battery:"4300mAh",
+rating:"★★★★★",
+img:"https://fdn2.gsmarena.com/vv/pics/apple/apple-iphone-15-pro-1.jpg"
+},
+
+{
+name:"Xiaomi 15 Ultra",
+brand:"Xiaomi",
+price:"৳100000",
+ram:"16GB",
+camera:"200MP",
+battery:"5300mAh",
+rating:"★★★★☆",
+img:"https://fdn2.gsmarena.com/vv/pics/xiaomi/xiaomi-14-ultra-1.jpg"
+},
+
+{
+name:"OnePlus 13",
+brand:"OnePlus",
+price:"৳95000",
+ram:"12GB",
+camera:"50MP",
+battery:"5400mAh",
+rating:"★★★★☆",
+img:"https://fdn2.gsmarena.com/vv/pics/oneplus/oneplus-12.jpg"
+},
+
+{
+name:"Oppo Find X8",
+brand:"Oppo",
+price:"৳90000",
+ram:"12GB",
+camera:"64MP",
+battery:"5000mAh",
+rating:"★★★★☆",
+img:"https://fdn2.gsmarena.com/vv/pics/oppo/oppo-find-x6-pro.jpg"
+},
+
+{
+name:"Vivo X200 Pro",
+brand:"Vivo",
+price:"৳92000",
+ram:"12GB",
+camera:"50MP",
+battery:"5200mAh",
+rating:"★★★★☆",
+img:"https://fdn2.gsmarena.com/vv/pics/vivo/vivo-x100-pro-1.jpg"
+},
+
+{
+name:"Google Pixel 9 Pro",
+brand:"Google",
+price:"৳110000",
+ram:"12GB",
+camera:"50MP",
+battery:"5000mAh",
+rating:"★★★★★",
+img:"https://fdn2.gsmarena.com/vv/pics/google/google-pixel-8-pro-1.jpg"
+}
+
+];
+
+const container=document.getElementById("phoneContainer");
+
+function displayPhones(list){
+
+container.innerHTML="";
+
+list.forEach(p=>{
+
+const card=document.createElement("div");
+
+card.className="phone";
+
+card.innerHTML=`
+<img src="${p.img}">
+<h3>${p.name}</h3>
+<p>${p.brand}</p>
+<p class="price">${p.price}</p>
+<p class="rating">${p.rating}</p>
+`;
+
+card.onclick=()=>showPhone(p);
+
+container.appendChild(card);
+
+});
+
+}
+
+displayPhones(phones);
+
+const search=document.getElementById("search");
+const brandFilter=document.getElementById("brandFilter");
+
+function filter(){
+
+let text=search.value.toLowerCase();
+let brand=brandFilter.value;
+
+let filtered=phones.filter(p=>{
+
+return(
+p.name.toLowerCase().includes(text) &&
+(brand==="all"||p.brand===brand)
+);
+
+});
+
+displayPhones(filtered);
+
+}
+
+search.addEventListener("keyup",filter);
+brandFilter.addEventListener("change",filter);
+
+const popup=document.getElementById("popup");
+
+function showPhone(p){
+
+popup.classList.remove("hidden");
+
+document.getElementById("pImg").src=p.img;
+document.getElementById("pName").innerText=p.name;
+document.getElementById("pBrand").innerText="Brand: "+p.brand;
+document.getElementById("pPrice").innerText="Price in BD: "+p.price;
+document.getElementById("pSpec").innerText=
+"RAM: "+p.ram+" | Camera: "+p.camera+" | Battery: "+p.battery;
+
+}
+
+document.getElementById("close").onclick=()=>{
+popup.classList.add("hidden");
+};
+
+</script>
+
+</body>
+</html>
